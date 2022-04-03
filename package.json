@@ -1,6 +1,6 @@
 {
-  "name": "rownd-vue",
-  "version": "0.0.0",
+  "name": "@rownd/vue",
+  "version": "1.0.0",
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
