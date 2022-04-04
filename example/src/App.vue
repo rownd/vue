@@ -4,9 +4,7 @@ import { $ } from 'vue/macros';
 import HelloWorld from '@/components/HelloWorld.vue'
 import { useRownd } from '../../src/main';
 
-// const { is_authenticated, user } = $(useRownd());
 const rownd = useRownd();
-const { is_authenticated, user } = rownd;
 </script>
 
 <template>
@@ -14,7 +12,18 @@ const { is_authenticated, user } = rownd;
     <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
 
     <div class="wrapper">
-      <HelloWorld :msg="`You did it${ rownd?.user?.data?.first_name ? ' ' + rownd.user?.data?.first_name : '' }!`" />
+      <HelloWorld
+        :msg="`You did it${rownd?.user?.data?.first_name ? ' ' + rownd.user?.data?.first_name : ''}!`"
+      />
+
+      <p v-if="rownd.is_authenticated">
+        You are logged in as
+        <strong>{{ rownd?.user?.data?.first_name }}</strong>
+      </p>
+
+      <p v-if="!rownd.is_authenticated">
+        <button @click="rownd.requestSignIn">Sign in</button>
+      </p>
 
       <nav>
         <RouterLink to="/">Home</RouterLink>
@@ -27,7 +36,7 @@ const { is_authenticated, user } = rownd;
 </template>
 
 <style>
-@import '@/assets/base.css';
+@import "@/assets/base.css";
 
 #app {
   max-width: 1280px;
