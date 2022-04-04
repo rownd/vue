@@ -1,9 +1,9 @@
-import { InjectionKey, ShallowRef } from 'vue';
-import { IRowndContext } from './types/RowndContext';
+import type { InjectionKey, UnwrapNestedRefs } from 'vue';
+import type { IRowndContext } from './types/RowndContext';
 
 /**
  * @ignore
  */
 export const ROWND_INJECTOR_ID = '$rownd';
 
-export const ROWND_INJECTION_KEY: InjectionKey<ShallowRef<IRowndContext>> = Symbol(ROWND_INJECTOR_ID);
+export const ROWND_INJECTION_KEY: InjectionKey<UnwrapNestedRefs<IRowndContext>> = Symbol(ROWND_INJECTOR_ID);

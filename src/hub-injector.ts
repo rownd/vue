@@ -47,13 +47,11 @@ export function injectHub({ appKey, hubUrlOverride, stateListener, locationHash,
     setConfigValue('setStateListener', stateListener);
     setConfigValue('setLocationHash', locationHash);
 
-    console.log('rest:', rest);
-
     if (rest) {
         Object.entries(rest).forEach(([key, value]) => {
             setConfigValue(`set${key.charAt(0).toUpperCase() + key.substring(1)}`, value);
         });
-        console.log('hubConfig:', window._rphConfig);
+        console.debug('hubConfig:', window._rphConfig);
     }
 
     return null;

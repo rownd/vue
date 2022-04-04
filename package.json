@@ -1,6 +1,21 @@
 {
   "name": "@rownd/vue",
   "version": "1.0.0",
+  "files": [
+    "dist"
+  ],
+  "main": "dist/rownd-vue.umd.js",
+  "module": "dist/rownd-vue.es.js",
+  "typings": "dist/types/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/rownd-vue.es.js",
+      "require": "./dist/rownd-vue.umd.js"
+    }
+  },
+  "engines": {
+    "node": ">=12"
+  },
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit && vite build",
@@ -27,9 +42,15 @@
     "eslint-plugin-vue": "^8.2.0",
     "jsdom": "^19.0.0",
     "prettier": "^2.5.1",
+    "rollup-plugin-dts": "^4.2.0",
     "typescript": "~4.6.3",
     "vite": "^2.9.1",
+    "vite-plugin-dts": "^1.0.5",
     "vitest": "^0.8.1",
     "vue-tsc": "^0.33.9"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rownd/vue.git"
   }
 }

@@ -1,17 +1,16 @@
-import { reactive, ref, ShallowRef } from 'vue';
-import { useImmer } from './lib/immer';
-import { IRowndContext } from "./types/RowndContext";
+import { reactive, type UnwrapNestedRefs } from 'vue';
+import type { IRowndContext } from "./types/RowndContext";
 
 type HubListenerProps = {
     state: any;
     api: any;
 };
 
-export function initContext(): { hubContext: ShallowRef<IRowndContext>; hubStateListener: any } {
+export function initContext(): { hubContext: UnwrapNestedRefs<IRowndContext>; hubStateListener: any } {
 
-    const apiQueue = [];
-    let hubApi = {};
-    let [hubContext, updateHubContext] = useImmer<IRowndContext>({
+    const apiQueue: { fnName: string, args: any[] }[] = [];
+    let hubApi: any = {};
+    let hubContext = reactive({
         requestSignIn: (...args: any[]) => callHubApi('requestSignIn', ...args),
         getAccessToken: (...args: any[]) => callHubApi('getAccessToken', ...args),
         signOut: (...args: any[]) => callHubApi('signOut', ...args),
@@ -73,15 +72,32 @@ export function initContext(): { hubContext: ShallowRef<IRowndContext>; hubState
                 is_verified_user: state.auth?.is_verified_user,
             },
             user: {
+                set: api.user.set,
+                setValue: api.user.setValue,
                 ...state.user,
             },
         };
 
         flushApiQueue();
 
-        updateHubContext((ctx: IRowndContext) => {
-            return transformedContext;
-        });
+        Object.assign(hubContext, transformedContext);
+
+        // User data getters/setters
+        if (hubContext?.user?.data) {
+            hubContext.user.data = new Proxy(hubContext.user.data, {
+                get(target, name, receiver) {
+                    if (!Reflect.has(target, name)) {
+                        return undefined;
+                    }
+                    return Reflect.get(target, name, receiver);
+                },
+                set(target, name, value, receiver) {
+                    // return Reflect.set(target, name, value, receiver);
+                    hubApi.user.setValue(name, value);
+                    return true;
+                }
+            });
+        }
     };
 
     return {
