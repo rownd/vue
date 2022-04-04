@@ -6,7 +6,7 @@ Easily add Rownd instant accounts and authentication to your Vue-based project.
 
 Simply run `npm install @rownd/vue` or `yarn add @rownd/vue`.
 
-> NOTE: This plugin only works with Vue 3 and above! If you need support for Vue 2, please [get in touch](mailto:support@rownd.io?subject=Support for Vue v2).
+> NOTE: This plugin only works with Vue 3 and above! If you need support for Vue 2, please [get in touch](mailto:support@rownd.io?subject=Support%20for%20Vue%20v2).
 
 ## Usage
 
