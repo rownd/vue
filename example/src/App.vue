@@ -1,9 +1,12 @@
 <script setup lang="ts">
 import { RouterLink, RouterView } from 'vue-router'
+import { $ } from 'vue/macros';
 import HelloWorld from '@/components/HelloWorld.vue'
 import { useRownd } from '../../src/main';
 
-const { is_authenticated, user } = useRownd();
+// const { is_authenticated, user } = $(useRownd());
+const rownd = useRownd();
+const { is_authenticated, user } = rownd;
 </script>
 
 <template>
@@ -11,7 +14,7 @@ const { is_authenticated, user } = useRownd();
     <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
 
     <div class="wrapper">
-      <HelloWorld :msg="`You did it${ is_authenticated ? ' ' + user.data.first_name : '' }!`" />
+      <HelloWorld :msg="`You did it${ rownd?.user?.data?.first_name ? ' ' + rownd.user?.data?.first_name : '' }!`" />
 
       <nav>
         <RouterLink to="/">Home</RouterLink>

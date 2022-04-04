@@ -1,4 +1,5 @@
-import { reactive, ref } from 'vue';
+import { reactive, ref, ShallowRef } from 'vue';
+import { useImmer } from './lib/immer';
 import { IRowndContext } from "./types/RowndContext";
 
 type HubListenerProps = {
@@ -6,11 +7,27 @@ type HubListenerProps = {
     api: any;
 };
 
-export function initContext() {
+export function initContext(): { hubContext: ShallowRef<IRowndContext>; hubStateListener: any } {
 
     const apiQueue = [];
-    const hubApi = reactive({});
-    const hubContext = reactive({});
+    let hubApi = {};
+    let [hubContext, updateHubContext] = useImmer<IRowndContext>({
+        requestSignIn: (...args: any[]) => callHubApi('requestSignIn', ...args),
+        getAccessToken: (...args: any[]) => callHubApi('getAccessToken', ...args),
+        signOut: (...args: any[]) => callHubApi('signOut', ...args),
+
+        is_initializing: true,
+        is_authenticated: false,
+        access_token: null,
+        auth: {
+            access_token: null,
+            is_authenticated: false,
+        },
+        user: {
+            data: {},
+            redacted_fields: [],
+        },
+    });
 
     function callHubApi(fnName: string, ...args: any[]) {
         if (hubApi[fnName]) {
@@ -23,21 +40,21 @@ export function initContext() {
     function flushApiQueue() {
         if (!apiQueue.length) {
             return;
-          }
-      
-          for (let { fnName, args } of apiQueue) {
+        }
+
+        for (let { fnName, args } of apiQueue) {
             if (!hubApi[fnName]) {
-              return;
+                return;
             }
-      
+
             hubApi[fnName](...args);
-          }
-      
-          apiQueue.length = 0;
+        }
+
+        apiQueue.length = 0;
     }
 
     function hubStateListener({ state, api }: HubListenerProps) {
-        Object.assign(hubApi, api);
+        hubApi = api;
 
         let transformedContext: IRowndContext = {
             // functions
@@ -62,7 +79,9 @@ export function initContext() {
 
         flushApiQueue();
 
-        Object.assign(hubContext, transformedContext);
+        updateHubContext((ctx: IRowndContext) => {
+            return transformedContext;
+        });
     };
 
     return {

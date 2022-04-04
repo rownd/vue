@@ -1,4 +1,4 @@
-import { App, inject, Plugin } from 'vue';
+import { App, inject, Plugin, ShallowRef } from 'vue';
 import { ROWND_INJECTION_KEY } from './consts';
 import { initContext } from './hub-context';
 import { injectHub } from './hub-injector';
@@ -20,6 +20,6 @@ const RowndPlugin: Plugin = {
 
 export default RowndPlugin;
 
-export function useRownd(): IRowndContext {
+export function useRownd(): ShallowRef<IRowndContext> {
     return inject(ROWND_INJECTION_KEY);
 }
