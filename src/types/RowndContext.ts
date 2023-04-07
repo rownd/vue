@@ -7,6 +7,7 @@ export interface IRowndContext {
     access_token: string | null;
     auth: IAuthContext;
     user: IUserContext;
+    near: INearContext;
 };
 
 interface IAuthContext {
@@ -17,6 +18,7 @@ interface IAuthContext {
 };
 
 interface IUserContext {
+    manageAccount: () => void;
     data: {
         id?: string;
         email?: string | null;
@@ -25,6 +27,12 @@ interface IUserContext {
     };
     redacted_fields: string[];
 };
+
+interface INearContext {
+    createNamedAccount: () => void;
+    ensureImplicitAccount: () => Promise<string>;
+    walletDetails: () => void;
+}
 
 interface RequestSignInOpts {
     identifier?: string;
