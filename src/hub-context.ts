@@ -1,3 +1,4 @@
+import _get from 'lodash-es/get';
 import { reactive, type UnwrapNestedRefs } from 'vue';
 import type { IRowndContext } from "./types/RowndContext";
 
@@ -6,11 +7,14 @@ type HubListenerProps = {
     api: any;
 };
 
-export function initContext(): { hubContext: UnwrapNestedRefs<IRowndContext>; hubStateListener: any } {
+export function initContext(): {
+    hubContext: UnwrapNestedRefs<IRowndContext>;
+    hubStateListener: (props: HubListenerProps) => void;
+} {
 
     const apiQueue: { fnName: string, args: any[] }[] = [];
     let hubApi: any = {};
-    let hubContext = reactive({
+    const hubContext = reactive({
         requestSignIn: (...args: any[]) => callHubApi('requestSignIn', ...args),
         getAccessToken: (...args: any[]) => callHubApi('getAccessToken', ...args),
         signOut: (...args: any[]) => callHubApi('signOut', ...args),
@@ -25,12 +29,20 @@ export function initContext(): { hubContext: UnwrapNestedRefs<IRowndContext>; hu
         user: {
             data: {},
             redacted_fields: [],
+            manageAccount: (...args: any[]) => callHubApi('user.manageAccount', ...args),
+        },
+
+        near: {
+            createNamedAccount: (...args: any[]) => callHubApi('near.createNamedAccount', ...args),
+            ensureImplicitAccount: (...args: any[]) => callHubApi('near.ensureImplicitAccount', ...args),
+            walletDetails: (...args: any[]) => callHubApi('near.walletDetails', ...args),
         },
     });
 
     function callHubApi(fnName: string, ...args: any[]) {
-        if (hubApi[fnName]) {
-            return hubApi[fnName](...args);
+        const fn = _get(hubApi, fnName);
+        if (fn) {
+            return fn(...args);
         }
 
         apiQueue.push({ fnName, args });
@@ -41,12 +53,13 @@ export function initContext(): { hubContext: UnwrapNestedRefs<IRowndContext>; hu
             return;
         }
 
-        for (let { fnName, args } of apiQueue) {
-            if (!hubApi[fnName]) {
+        for (const { fnName, args } of apiQueue) {
+            const fn = _get(hubApi, fnName);
+            if (!fn) {
                 return;
             }
 
-            hubApi[fnName](...args);
+            fn(...args);
         }
 
         apiQueue.length = 0;
@@ -55,7 +68,7 @@ export function initContext(): { hubContext: UnwrapNestedRefs<IRowndContext>; hu
     function hubStateListener({ state, api }: HubListenerProps) {
         hubApi = api;
 
-        let transformedContext: IRowndContext = {
+        const transformedContext: IRowndContext = {
             // functions
             requestSignIn: (...args: any[]) => callHubApi('requestSignIn', ...args),
             getAccessToken: (...args: any[]) => callHubApi('getAccessToken', ...args),
@@ -72,9 +85,17 @@ export function initContext(): { hubContext: UnwrapNestedRefs<IRowndContext>; hu
                 is_verified_user: state.auth?.is_verified_user,
             },
             user: {
+                manageAccount: (...args: any[]) => callHubApi('user.manageAccount', ...args),
                 set: api.user.set,
                 setValue: api.user.setValue,
                 ...state.user,
+            },
+
+            // near
+            near: {
+                createNamedAccount: (...args: any[]) => callHubApi('near.createNamedAccount', ...args),
+                ensureImplicitAccount: (...args: any[]) => callHubApi('near.ensureImplicitAccount', ...args),
+                walletDetails: (...args: any[]) => callHubApi('near.walletDetails', ...args),
             },
         };
 
