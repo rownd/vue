@@ -39,7 +39,7 @@ app.mount("#app");
 
 Later on within your app's components, you can use the Rownd injector/hook to access the Rownd browser API:
 
-```vue
+```html
 <script setup lang="ts">
     import { RouterLink, RouterView } from "vue-router";
     import HelloWorld from "@/components/HelloWorld.vue";
@@ -50,7 +50,7 @@ Later on within your app's components, you can use the Rownd injector/hook to ac
 
 <template>
     <div v-if="rownd.is_authenticated">
-        <h1>Welcome, {{ rownd.user.data.full_name }}!
+        <h1>Welcome, {{ rownd.user.data.full_name }}!</h1>
         <strong>{{ rownd?.user?.data?.first_name }}</strong>
     </div>
 
@@ -113,7 +113,7 @@ let accessToken = await rownd.getAccessToken({
 
 `is_initializing` will be `true` until the Hub has fully loaded, recalled its state, and resolved the current user's authentication status. This usually takes only a few milliseconds, but if you make decisions that depend on the `is_authenticated` flag while `is_initializing` is still `true`, your code/logic may not work as you expect.
 
-```vue
+```html
 <script setup>
     const rownd = useRownd();
 </script>
@@ -130,7 +130,7 @@ let accessToken = await rownd.getAccessToken({
 
 Indicates whether the current user is signed in or not.
 
-```vue
+```html
 <script setup>
     const rownd = useRownd();
 </script>
@@ -145,7 +145,7 @@ Indicates whether the current user is signed in or not.
 
 Represents the current access token for the user.
 
-```vue
+```html
 <script setup>
     const rownd = useRownd();
 
@@ -164,7 +164,7 @@ Represents the current access token for the user.
 
 Represents information about the current user, specifically their profile information. In the example below, we use the existing data to display the current value of `first_name` in a form field, and then immediately sync changes to Rownd as the user updates the form field.
 
-```vue
+```html
 <script setup>
     const rownd = useRownd();
 </script>
@@ -183,7 +183,7 @@ Represents information about the current user, specifically their profile inform
 You might not want to sync changes to Rownd immediately, but rather wait for the user to click a button,
 as in the following example:
 
-```vue
+```html
 <script setup>
     import { reactive } from 'vue';
     const rownd = useRownd();
