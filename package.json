@@ -22,13 +22,32 @@
     "preview": "vite preview --port 5050",
     "test:unit": "vitest --environment jsdom",
     "typecheck": "vue-tsc --noEmit -p tsconfig.vitest.json --composite false",
-    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
+    "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore",
+    "release": "release-it"
+  },
+  "release-it": {
+    "git": {
+      "commitMessage": "chore: release ${version}",
+      "tagName": "v${version}"
+    },
+    "npm": {
+      "publish": true
+    },
+    "github": {
+      "release": true
+    },
+    "plugins": {
+      "@release-it/conventional-changelog": {
+        "preset": "angular"
+      }
+    }
   },
   "dependencies": {
     "immer": "^9.0.12",
     "vue": "^3.2.31"
   },
   "devDependencies": {
+    "@release-it/conventional-changelog": "^5.1.1",
     "@rushstack/eslint-patch": "^1.1.0",
     "@types/jsdom": "^16.2.14",
     "@types/lodash-es": "^4.17.7",
@@ -44,6 +63,7 @@
     "jsdom": "^19.0.0",
     "lodash-es": "^4.17.21",
     "prettier": "^2.5.1",
+    "release-it": "^15.10.1",
     "rollup-plugin-dts": "^4.2.0",
     "typescript": "~4.6.3",
     "vite": "^2.9.1",
