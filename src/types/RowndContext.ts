@@ -17,14 +17,18 @@ interface IAuthContext {
     is_verified_user?: boolean;
 };
 
+type UserData = {
+    user_id?: string;
+    email?: string | null;
+    [key: string]: any;
+};
+
 interface IUserContext {
     manageAccount: () => void;
-    data: {
-        id?: string;
-        email?: string | null;
-        phone?: string | null;
-        [key: string]: any;
-    };
+    set: (data: UserData) => Promise<UserData> | undefined;
+    setValue: (key: string, value: any) => Promise<UserData> | undefined;
+    uploadFile: (field: string, file: File) => Promise<any>;
+    data: UserData;
     redacted_fields: string[];
 };
 
@@ -34,8 +38,41 @@ interface INearContext {
     walletDetails: () => void;
 }
 
-interface RequestSignInOpts {
+type RequestSignInOpts = {
     identifier?: string;
     auto_sign_in?: boolean;
     init_data?: Record<string, any>;
-}
+    user_data?: Record<string, any>;
+    post_login_redirect?: string;
+    login_step?: LoginStep;
+    include_user_data?: boolean;
+    redirect?: boolean;
+    intent?: RequestSignInIntent;
+    group_to_join?: string;
+  } & (
+    | {
+        method?: never;
+      }
+    | {
+        method: 'one_tap';
+        method_options?: {
+          prompt_parent_id?: string;
+        };
+      }
+    | {
+        method: 'email' | 'phone' | 'google' | 'apple' | 'passkeys' | 'anonymous';
+      }
+  );
+
+  export enum RequestSignInIntent {
+    SignUp = 'sign_up',
+    SignIn = 'sign_in',
+  }
+
+  export enum LoginStep {
+    INIT = 'init',
+    NO_ACCOUNT = 'no_account',
+    SUCCESS = 'success',
+    ERROR = 'error',
+    COMPLETING = 'completing',
+  }
