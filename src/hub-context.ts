@@ -30,6 +30,9 @@ export function initContext(): {
             data: {},
             redacted_fields: [],
             manageAccount: (...args: any[]) => callHubApi('user.manageAccount', ...args),
+            uploadFile: (...args: any[]) => callHubApi('user.uploadFile', ...args),
+            set: (...args: any[]) => callHubApi('user.set', ...args),
+            setValue: (...args: any[]) => callHubApi('user.setValue', ...args),
         },
 
         near: {
@@ -86,6 +89,7 @@ export function initContext(): {
             },
             user: {
                 manageAccount: (...args: any[]) => callHubApi('user.manageAccount', ...args),
+                uploadFile: (...args: any[]) => callHubApi('user.uploadFile', ...args),
                 set: api.user.set,
                 setValue: api.user.setValue,
                 ...state.user,
